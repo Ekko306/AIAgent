@@ -1,0 +1,14 @@
+# MongoDB 数据目录（WiredTiger 二进制文件，严禁入库）
+config/db/
+
+# 服务运行日志
+logs/
+
+# 含密钥/密码的本地配置，不入库
+config/resource.yml
+config/mcp.json
+config/docker-compose.yml
+
+# Python 运行产物
+__pycache__/
+*.pyc

@@ -282,6 +282,9 @@ class PlanningService:
             for obs in request.observations:
                 plan = obs.plan
                 m: Dict = {"role": "assistant"}
+                # thinking 模型要求把上一轮的 reasoning_content 原样传回
+                if plan.thinking:
+                    m["reasoning_content"] = plan.thinking
                 messages.append(m)
 
                 calling_list = plan.tool_callings

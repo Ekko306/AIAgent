@@ -141,20 +141,20 @@ mongodb: "mongodb://root:your-secure-password@localhost:27017/agent"
 
 ### 启动服务
 
-在四个独立的终端窗口中分别启动各模块：
+在四个独立的终端窗口中分别启动各模块（macOS 需要先内联设置 `OBJC_DISABLE_INITIALIZE_FORK_SAFETY=YES`，避免 gunicorn fork 出的 worker 触发 ObjC fork 安全检查而崩溃）：
 
 ```bash
 # 终端 1 - 启动规划模块
-python -m planning.run --config config/planning.yml --run.port 10000
+OBJC_DISABLE_INITIALIZE_FORK_SAFETY=YES python -m planning.run --config config/planning.yml --run.port 10000
 
 # 终端 2 - 启动执行模块
-python -m execution.run --config-path config/execution.yml --port 15000
+OBJC_DISABLE_INITIALIZE_FORK_SAFETY=YES python -m execution.run --config-path config/execution.yml --port 15000
 
 # 终端 3 - 启动会话记忆模块
-python -m memory.session.run --config config/session_memory.yml --port 20000
+OBJC_DISABLE_INITIALIZE_FORK_SAFETY=YES python -m memory.session.run --config config/session_memory.yml --port 20000
 
 # 终端 4 - 启动总结模块
-python -m summarization.run --config config/summarizaztion.yml --port 25000
+OBJC_DISABLE_INITIALIZE_FORK_SAFETY=YES python -m summarization.run --config config/summarizaztion.yml --port 25000
 ```
 
 ### 运行智能体

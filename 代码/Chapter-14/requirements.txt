@@ -1,5 +1,7 @@
 json5
+json_repair
 libentry
+liblogging
 pydantic
 libdata
 httpx

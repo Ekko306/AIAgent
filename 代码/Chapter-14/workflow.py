@@ -8,6 +8,7 @@ from typing import List, Optional
 import rich
 from libentry import ArgumentParser
 from libentry.mcp.client import APIClient
+from prompt_toolkit import prompt as pt_prompt
 from pydantic import BaseModel
 from rich.console import Console
 from rich.panel import Panel
@@ -77,7 +78,7 @@ class Workflow:
     def run(self):
         rich.print(self.session_id)
         while True:
-            query = input("\nUser: ").strip()
+            query = pt_prompt("User: ").strip()
             if query.lower() in ['exit', 'quit', 'bye']:
                 console.print("[bold blue]Goodbye![/bold blue]")
                 break
@@ -173,6 +174,8 @@ class Workflow:
         response = PlanningResponse.model_validate(response)
 
         context.plan = response.plans
+        # thinking 模型的 reasoning_content 需要在下轮 /plan 时传回 API
+        context.plan.thinking = response.thinking
         context.finished = response.finished
 
     def execute(self, context: Context):
