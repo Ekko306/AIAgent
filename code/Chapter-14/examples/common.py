@@ -21,7 +21,8 @@ class ExampleConfig(BaseModel):
 
     name: str = Field(
         title="服务名称",
-        description="当前内容仅为例子，实际配置属性请基于模块具体需求定义"
+        description="当前内容仅为例子，实际配置属性请基于模块具体需求定义",
+        default="example"
     )
     root_dir: str = Field(
         title="根目录",

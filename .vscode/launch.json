@@ -1,0 +1,31 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Python: 示例服务 (examples.run)",
+            "type": "debugpy",
+            "request": "launch",
+            "module": "examples.run",
+            "cwd": "${workspaceFolder}/code/Chapter-14",
+            "args": ["--port", "8000"],
+            "console": "integratedTerminal"
+        },
+        {
+            "name": "Python: 示例客户端 (examples.client)",
+            "type": "debugpy",
+            "request": "launch",
+            "module": "examples.client",
+            "cwd": "${workspaceFolder}/code/Chapter-14",
+            "args": ["--port", "8000"],
+            "console": "integratedTerminal"
+        },
+        {
+            "name": "Python: 工作流 (workflow)",
+            "type": "debugpy",
+            "request": "launch",
+            "module": "workflow",
+            "cwd": "${workspaceFolder}/code/Chapter-14",
+            "console": "integratedTerminal"
+        }
+    ]
+}

@@ -1,4 +1,11 @@
 #!/usr/bin/env python3
+import os.path
+import sys
+
+# 支持直接运行本文件（如 IDE 右上角点击运行）：将项目根目录加入 sys.path，
+# 使 `examples` 包可被导入；等价于在 Chapter-14 目录下执行 `python3 -m examples.run`
+sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+
 
 __author__ = "xi"
 
@@ -25,10 +32,13 @@ def main():
     request = ExampleRequest(speed=5, stream=True)
     response = client.post(request)
 
-    assert isinstance(response, GeneratorType)
-    for resp in response:
-        resp = ExampleResponse.model_validate(resp)
-        print(resp.content, end="", flush=True)
+    if (isinstance(response, GeneratorType)):
+        for resp in response:
+            resp = ExampleResponse.model_validate(resp)
+            print(resp.content, end="", flush=True)
+    else:
+        print(response)
+
     print()
     return 0
 
