@@ -12,14 +12,15 @@ export OBJC_DISABLE_INITIALIZE_FORK_SAFETY=YES
 LOG_DIR="logs"
 mkdir -p "$LOG_DIR"
 
-NAMES=(planning execution memory summarization)
+NAMES=(planning execution memory summarization intent)
 CMDS=(
   "python -m planning.run --config config/planning.yml --run.port 10000"
   "python -m execution.run --config-path config/execution.yml --port 15000"
   "python -m memory.session.run --config config/session_memory.yml --port 20000"
   "python -m summarization.run --config config/summarizaztion.yml --port 25000"
+  "python -m intent.run --config config/intent.yml --run.port 11000"
 )
-PORTS=(10000 15000 20000 25000)
+PORTS=(10000 15000 20000 25000 11000)
 
 # 启动前检查端口占用，避免之前踩过的“双实例共享端口”问题
 for i in "${!NAMES[@]}"; do

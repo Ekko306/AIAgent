@@ -15,6 +15,7 @@ from rich.panel import Panel
 
 from agent_types.common import Intent, Observation, Plan, SessionMemory, SystemMemory, SystemProfile, Tool
 from agent_types.execution import ToolExecutingRequest, ToolExecutingResponse
+from agent_types.intent import IntentRequest, IntentResponse
 from agent_types.memory.session import ReadSessionMemoryRequest, ReadSessionMemoryResponse, WriteChatHistoryRequest
 from agent_types.planning import PlanningRequest, PlanningResponse
 from agent_types.summarization import SummarizationRequest, SummarizationResponse
@@ -45,6 +46,7 @@ class WorkflowConfig(BaseModel):
     planning_url: str
     execution_url: str
     summarization_url: str
+    intent_url: Optional[str] = None  # 可选：配置后启用意图识别与工具筛选，不配置则保持原有流程
     max_iterations: int
 
 
@@ -61,6 +63,11 @@ class Workflow:
         for tool in mcp_tools:
             self.tools.append(Tool.model_validate(tool))
         self.summarizer = APIClient(self.config.summarization_url)
+        self.intent_detector = (
+            APIClient(self.config.intent_url)
+            if self.config.intent_url else
+            None
+        )
 
         self.session_id = str(uuid.uuid4())
         self.max_iterations = self.config.max_iterations
@@ -103,6 +110,7 @@ class Workflow:
 
             # for m in context.session_memory.chat_history:
             #     rich.print(m)
+            self.detect_intent(context)
 
             # Iterative Plan & Execute
             for i in range(self.max_iterations):
@@ -132,6 +140,39 @@ class Workflow:
         response = ReadSessionMemoryResponse.model_validate(response)
 
         context.session_memory = response.session_memory
+
+    def detect_intent(self, context: Context):
+        """意图识别 + 工具筛选（可选步骤）。
+
+        识别用户意图并按意图筛选候选工具，以减小规划模块的复杂度；
+        未配置 intent_url 时为空操作，保持原有流程不变。
+        """
+        if self.intent_detector is None:
+            return
+
+        request = IntentRequest(
+            query=context.query,
+            tools=context.tools,
+            session_memory=context.session_memory
+        )
+        response = IntentResponse.model_validate(self.intent_detector.post(request))
+
+        if not response.intents:
+            return
+        # execution/summarization 只接受单个 Intent，多意图时取第一个作为主意图
+        context.intent = response.intents[0]
+        console.print(f"[bold magenta]Intent[/bold magenta]: {context.intent.name}")
+
+        if response.candidate_tools:
+            tool_map = {tool.name: tool for tool in context.tools}
+            filtered = []
+            for tool_list in response.candidate_tools:
+                for tool in tool_list:
+                    if tool.name in tool_map and tool_map[tool.name] not in filtered:
+                        filtered.append(tool_map[tool.name])
+            if filtered:
+                console.print(f"工具筛选: {len(context.tools)} -> {len(filtered)}")
+                context.tools = filtered
 
     def write_user_message(self, context: Context):
         request = WriteChatHistoryRequest(

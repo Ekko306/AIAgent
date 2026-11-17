@@ -1,0 +1,27 @@
+# Tools
+以下是系统中所有可用的工具：
+{%- if tools %}
+    {%- for tool in tools %}
+        {{- "\n" }}- **{{ tool.name }}**: {{ tool.description or "无描述" }}
+    {%- endfor %}
+{%- else %}
+    {{- "\n" }}未提供任何可用工具。
+{%- endif %}
+
+# CandidateIntents
+{%- if candidate_intents %}
+以下是系统的候选意图，请从中选择与查询最匹配的意图（可以选多个）：
+    {%- for item in candidate_intents %}
+        {{- "\n" }}- **{{ item.name }}**: {{ item.description or "" }}
+    {%- endfor %}
+{%- else %}
+未指定候选意图，请根据查询内容自行总结用户意图（1到2个即可）。
+{%- endif %}
+
+# Query
+{{ query }}
+
+# Output
+请仅输出如下格式的JSON，不要输出任何其他内容（不要使用代码块标记）：
+{"intents": [{"name": "意图名称", "description": "意图的详细描述"}], "candidate_tools": [["与第一个意图相关的工具名", "..."], ["与第二个意图相关的工具名", "..."]]}
+其中 candidate_tools 中工具名列表的顺序必须与 intents 一一对应，且工具名必须从[可用工具](#Tools)中选取。

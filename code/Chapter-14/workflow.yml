@@ -2,4 +2,6 @@ planning_url: "http://localhost:10000"
 execution_url: "http://localhost:15000"
 session_memory_url: "http://localhost:20000"
 summarization_url: "http://localhost:25000"
+# 可选：意图识别服务，配置后启用"意图识别-工具筛选"步骤；删除此行则恢复原有流程
+intent_url: "http://localhost:11000"
 max_iterations: 10
