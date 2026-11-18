@@ -223,7 +223,7 @@ class SummarizationService:
             query=request.task,
             intent=request.intent,
             observations=converted_observations
-        )
+        ) 
         if not request.enable_thinking:
             user_prompt = user_prompt + "/no_think"
         messages.append({"role": "user", "content": user_prompt})

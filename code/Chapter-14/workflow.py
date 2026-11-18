@@ -108,8 +108,8 @@ class Workflow:
 
             self.read_session_memory(context)
 
-            # for m in context.session_memory.chat_history:
-            #     rich.print(m)
+            for m in context.session_memory.chat_history:
+                rich.print(m)
             self.detect_intent(context)
 
             # Iterative Plan & Execute

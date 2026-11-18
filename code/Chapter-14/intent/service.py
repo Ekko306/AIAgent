@@ -16,7 +16,7 @@ from libentry.mcp import api
 from liblogging import log_request
 from pydantic import BaseModel, Field, model_validator
 
-from planning.llm import LLMResponse, call_llm
+from intent.llm import LLMResponse, call_llm
 
 __dir__ = os.path.dirname(os.path.abspath(__file__))
 
