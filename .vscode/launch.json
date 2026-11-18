@@ -25,7 +25,9 @@
             "request": "launch",
             "module": "workflow",
             "cwd": "${workspaceFolder}/code/Chapter-14",
-            "console": "integratedTerminal"
+            "args": ["--config", "workflow.yml"],
+            "console": "integratedTerminal",
+            "justMyCode": false
         }
     ]
 }

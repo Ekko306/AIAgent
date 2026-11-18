@@ -33,10 +33,10 @@ def call_llm(
 ) -> Union[LLMResponse, Iterable[LLMResponse]]:
     """统一的LLM调用方法，支持流式和非流式"""
     kwargs["model"] = model
-    kwargs["stream"] = stream
-    kwargs["messages"] = messages
+    kwargs["stream"] = stream # 布尔，是否流式
+    kwargs["messages"] = messages # 之前的参数
     if tools:
-        kwargs["tools"] = tools
+        kwargs["tools"] = tools # 调用是否有候选的工具
 
     client = openai.OpenAI(
         api_key=api_key,
@@ -45,20 +45,22 @@ def call_llm(
     )
     response = client.chat.completions.create(**kwargs)
 
-    if not stream:
+    if not stream: # 一次输出
         try:
-            assert isinstance(response, ChatCompletion)
-            if not response.choices:
+            assert isinstance(response, ChatCompletion) # 确认类型是ChatCompletion，不是Stream
+            if not response.choices:  # choices是空的时候报错
                 raise RuntimeError(
                     f"非常抱歉，本模型可能由于以下原因，导致无法正常服务\n"
                     f"{str(response)}"
                 )
             message = response.choices[0].message
 
+            # 拆深度思考内容
             thinking = None
             if hasattr(message, "reasoning_content"):
                 thinking = getattr(message, "reasoning_content")
 
+            # 拆tool_call内容，反序列化
             tool_callings = None
             if message.tool_calls:
                 tool_callings = []
